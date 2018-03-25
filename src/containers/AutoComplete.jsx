@@ -1,6 +1,7 @@
 // @flow
 import React from "react";
+import AutoCompleteInput from "./../components/AutoCompleteInput/AutoCompleteInput";
 
-const AutoComplete = () => <h1>Working First Commit</h1>;
+const AutoComplete = () => <AutoCompleteInput />;
 
 export default AutoComplete;
