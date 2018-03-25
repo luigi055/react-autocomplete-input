@@ -83,3 +83,6 @@ React Input Autocompletation is a little component where you can use independent
         | it communicates a clearer interface with less noisy (UI focused instead behavior)       | little noisy to see the UI      |
         | No _this_ keyboard	 | _This_ bound to the component      |
         
+- Static UI(Presentational Component). Show suggestions and style them using styled-components for this task
+	- Styled-components is a css-in-js implementation this is a modular aproach that fits great together to React components. It Utilises tagged template literals string to style the UI, when you defining your styled you're actually creating a normal Recat component, that has the styles you wrote attached to it!.
+	- Since quandoo uses styled-component i decided to choose the aproach since developers could be more familiar with this syntax.

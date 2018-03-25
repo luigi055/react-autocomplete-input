@@ -1,13 +1,26 @@
 // @flow
 import React, { Component } from "react";
+import Suggestions from "./../Suggestions/Suggestions";
+import { ContainerInput, InputSearch } from "./Styles";
+
+type Props = {
+  maxSuggests: number,
+  maxWidth: string
+};
 
 type State = {
   searchTerm: string
 };
 
-class AutoCompleteInput extends Component<{}, State> {
+class AutoCompleteInput extends Component<Props, State> {
+  static defaultProps = {
+    maxSuggests: 4,
+    maxWidth: "300px"
+  };
+
   state = {
-    searchTerm: ""
+    searchTerm: "",
+    open: true
   };
 
   handleTermChange = (event: SyntheticInputEvent<HTMLInputElement>) => {
@@ -17,17 +30,25 @@ class AutoCompleteInput extends Component<{}, State> {
   };
 
   render() {
+    const { searchTerm, open } = this.state;
     return (
-      <label htmlFor="autoComplete">
-        Search Input:
-        <input
+      <ContainerInput htmlFor="autoComplete">
+        <InputSearch
           id="autoComplete"
           type="text"
-          value={this.state.searchTerm}
+          value={searchTerm}
           onChange={this.handleTermChange}
           placeholder="Search Item"
+          open={open && searchTerm.length > 0 ? open : false}
+          maxWidth={this.props.maxWidth}
         />
-      </label>
+        <Suggestions
+          open={open}
+          maxWidth={this.props.maxWidth}
+          {...this.state}
+          {...this.props}
+        />
+      </ContainerInput>
     );
   }
 }
