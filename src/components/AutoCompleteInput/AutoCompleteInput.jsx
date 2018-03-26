@@ -18,7 +18,8 @@ type Props = {
 
 type State = {
   searchTerm: string,
-  open: boolean
+  open: boolean,
+  suggestedItems: Array<string>
 };
 
 class AutoCompleteInput extends Component<Props, State> {
@@ -33,7 +34,8 @@ class AutoCompleteInput extends Component<Props, State> {
 
   state = {
     searchTerm: "",
-    open: false
+    open: false,
+    suggestedItems: []
   };
 
   componentDidMount() {
@@ -93,6 +95,9 @@ class AutoCompleteInput extends Component<Props, State> {
           onChange={AutoCompleteInput.handleTermChange(
             this.updateLocalState,
             this.updateParentState,
+            this.props.autoCompleteItems,
+            this.props.maxSuggests,
+            this.props.includeSearchTerm
           )}
           onFocus={AutoCompleteInput.handleFocusInput(
             this.updateLocalState,
@@ -123,6 +128,9 @@ class AutoCompleteInput extends Component<Props, State> {
 AutoCompleteInput.handleTermChange = (
   updateLocalState: Function,
   updateParentState: Function,
+  autoCompleteItems: Array<string>,
+  maxSuggests: number,
+  includeSearchTerm: boolean
 ) => (event: SyntheticInputEvent<HTMLInputElement>) => {
   // Differences between e.target and e.currentTarget
   // target = element that triggered event. or in other words
@@ -135,9 +143,31 @@ AutoCompleteInput.handleTermChange = (
   // Since i accessed to the DOM element that's associated with the event handler
   // I defined, i used currentTarget.
 
+  const AutoCompleteList = autoCompleteItems
+    .filter(autoCompleteItem => {
+      // If the search item is include within the array item this will show
+      // all the options which includes the search items
+      if (includeSearchTerm) {
+        return (
+          autoCompleteItem
+            .toLowerCase()
+            .indexOf(event.target.value.toLowerCase()) >= 0
+        );
+      }
+      // By default the autocomplete input will show only the options which
+      // search term starts and includes with the search term
+      return (
+        autoCompleteItem
+          .toLowerCase()
+          .search(event.target.value.toLowerCase()) === 0
+      );
+    })
+    .splice(0, maxSuggests);
+
   updateLocalState({
     searchTerm: event.currentTarget.value,
-    open: true
+    open: true,
+    suggestedItems: AutoCompleteList
   });
   updateParentState(event.target.value);
 };
@@ -164,7 +194,8 @@ AutoCompleteInput.handleCloseAutoComplete = (updateLocalState: Function) => (
   // Close autocomplete when press Enter or Esc
   if (event.which === 13 || event.which === 27) {
     updateLocalState({
-      open: false
+      open: false,
+      suggestedItems: []
     });
   }
 };
