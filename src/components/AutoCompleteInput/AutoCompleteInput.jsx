@@ -6,25 +6,34 @@ import { ContainerInput, InputSearch } from "./Styles";
 
 type Props = {
   autoCompleteItems: Array<string>,
-  maxWidth: string
+  maxSuggests: number,
+  maxWidth: string,
+  includeSearchTerm: boolean,
+  labelName: string,
+  showLabel: boolean,
+  placeholder: string,
+  stateName: string,
+  parentUpdateState: Function
 };
 
 type State = {
   searchTerm: string,
-  open: boolean,
-  suggestedItems: Array<string>
+  open: boolean
 };
 
 class AutoCompleteInput extends Component<Props, State> {
   static defaultProps = {
     maxSuggests: 4,
-    maxWidth: "300px"
+    maxWidth: "300px",
+    includeSearchTerm: false,
+    labelName: "",
+    showLabel: false,
+    placeholder: ""
   };
 
   state = {
     searchTerm: "",
-    open: false,
-    suggestedItems: []
+    open: false
   };
 
   componentDidMount() {
@@ -57,6 +66,12 @@ class AutoCompleteInput extends Component<Props, State> {
   };
 
   updateLocalState = state => this.setState(state);
+  // This will update parent state which control this component
+  updateParentState = searchTerm => {
+    this.props.parentUpdateState({
+      [this.props.stateName]: searchTerm
+    });
+  };
 
   render() {
     const { searchTerm, open } = this.state;
@@ -68,19 +83,27 @@ class AutoCompleteInput extends Component<Props, State> {
           this.domRef = domRef;
         }}
         className="autocomplete"
+        showLabel={this.props.showLabel}
       >
+        {this.props.labelName.length > 0 && (
+          <span> {this.props.labelName} </span>
+        )}
         <InputSearch
           type="text"
-          onChange={AutoCompleteInput.handleTermChange(this.updateLocalState)}
+          onChange={AutoCompleteInput.handleTermChange(
+            this.updateLocalState,
+            this.updateParentState,
+          )}
           onFocus={AutoCompleteInput.handleFocusInput(
             this.updateLocalState,
-            searchTerm
+            searchTerm,
+            this.updateParentState
           )}
           onKeyDown={AutoCompleteInput.handleCloseAutoComplete(
             this.updateLocalState
           )}
           value={searchTerm}
-          placeholder="Enter your Item"
+          placeholder={this.props.placeholder}
           open={open && searchTerm.length > 0 ? open : false}
           maxWidth={this.props.maxWidth}
         />
@@ -88,6 +111,7 @@ class AutoCompleteInput extends Component<Props, State> {
           open={open}
           maxWidth={this.props.maxWidth}
           updateLocalState={this.updateLocalState}
+          updateParentState={this.updateParentState}
           {...this.state}
           {...this.props}
         />
@@ -96,9 +120,10 @@ class AutoCompleteInput extends Component<Props, State> {
   }
 }
 
-AutoCompleteInput.handleTermChange = (updateLocalState: Function) => (
-  event: SyntheticInputEvent<HTMLInputElement>
-) => {
+AutoCompleteInput.handleTermChange = (
+  updateLocalState: Function,
+  updateParentState: Function,
+) => (event: SyntheticInputEvent<HTMLInputElement>) => {
   // Differences between e.target and e.currentTarget
   // target = element that triggered event. or in other words
   // it could be whatever that's actualy clicked on. It can vary, as this
@@ -108,17 +133,19 @@ AutoCompleteInput.handleTermChange = (updateLocalState: Function) => (
   // This will never change.
 
   // Since i accessed to the DOM element that's associated with the event handler
-  // I decided, i used currentTarget.
+  // I defined, i used currentTarget.
 
   updateLocalState({
     searchTerm: event.currentTarget.value,
     open: true
   });
+  updateParentState(event.target.value);
 };
 
 AutoCompleteInput.handleFocusInput = (
   updateLocalState: Function,
-  searchTerm: string
+  searchTerm: string,
+  updateParentState: Function
 ) => (event: SyntheticFocusEvent<HTMLInputElement>) => {
   event.preventDefault();
   /* eslint-disable */
@@ -128,16 +155,16 @@ AutoCompleteInput.handleFocusInput = (
   updateLocalState({
     open
   });
+  updateParentState(searchTerm);
 };
 
 AutoCompleteInput.handleCloseAutoComplete = (updateLocalState: Function) => (
   event: SyntheticKeyboardEvent<HTMLInputElement>
 ) => {
   // Close autocomplete when press Enter or Esc
-  if (event.which === 27) {
+  if (event.which === 13 || event.which === 27) {
     updateLocalState({
-      open: false,
-      suggestedItems: []
+      open: false
     });
   }
 };
