@@ -2,6 +2,130 @@
 
 React Input Autocompletation is a little component where you can use independently, since long time ago i wanted to create and implement my own autocomplete input module and now i had the chance to do one for a dev task for Quandoo.
 
+## Table of contents
+- [Next To Do](#next-to-do)
+- [Installation](#installation)
+- [Enviroments](#enviroments)
+  - [Production](#production)
+  - [Development](#development)
+- [How to use](#how-to-use)
+- [Clearing Public Folder](clearing-public-folder)
+- [Tech Stack](#tech-stack)
+- [Creation Steps](#creation-steps)
+- [Software used](#software-used)
+- [Author](#author)
+- [license](#license)
+
+## Next To Do
+- [ ] Keyboard controls
+- [ ] Accesibility considerations
+- [ ] Documentation revisions
+- [ ] styled-component template to simplify customization
+- [ ] NPM module
+
+## Installing
+
+First step clone this repo
+```
+$git clone https://github.com/luigi055/react-autocomplete-input.git
+```
+And then dependning wheather you use npm or yarn
+
+Case using __yarn__:
+```
+$cd react-autocomplete-input && yarn
+```
+Case using __npm__
+```
+$cd react-autocomplete-input && npm install
+```
+## Enviroments
+### Production
+  in case you want to emulate a production enviroment use
+```
+$yarn run start
+```
+__ONCE YOU WANT TO DEPLOY YOUR APP MAKE SURE TO REMOVE. export NODE_ENV=production || SET \"NODE_ENV=production\" && IN START SCRIPT__
+
+make sure the start script look like this when deploy:
+```
+"start": "webpack -p --optimize-minimize && node server.js"
+```
+
+which runs our local express server and run webpack which build the public folder
+
+In case you just want to build the app inproduction use
+```
+$yarn run build
+```
+visit http://localhost:3000 in any browser
+
+### Development
+the development enviroment use all the power of webpack dev server. the next script runs the dev server
+```
+$yarn run dev
+```
+
+to build a development package use
+```
+$yarn run build:dev
+```
+
+or in case to want build to compile automatically on save
+
+```
+$yarn run build:dev--watch
+```
+
+visit http://localhost:3000 in any browser
+
+## How to use
+
+first Import the module
+```
+import AutoCompleteInput from "./../components/AutoCompleteInput/AutoCompleteInput";
+```
+
+Then use the component here i leave all available props supported for now
+- __stateName__: __(Is required)__ and is the name which will extract the value of the component
+- __parentUpdateState__: __(Is required)__ and together with stateName will extract the value of the component.
+- __autoCompleteItems__: __(Is required)__ array of strings with suggested options.
+- __maxSuggests__: how many suggests to show _default = 4_.
+- __maxWidth__: component max width _default=300px_
+- __labelName__: name of the label. (for accesibility is good practice to include it)
+- __showLabel__: if show label name _default=false_
+- __placeholder__: placeholder of the component _default= ""_
+```
+        <AutoCompleteInput
+          stateName="selectedCountry"
+          parentUpdateState={this.updateGlobalState}
+          autoCompleteItems={this.state.countries}
+          maxSuggests={5}
+          maxWidth="280px"
+          labelName="Search Country: "
+          placeholder="Type a Country Name"
+        />
+```
+
+## Clearing Public Folder
+There's an easy way to remove the public folder via npm or yarn script. it is good practice to remove the build folder before produce it again you can remove this using the following script
+
+```
+$yarn run clear
+```
+
+## Tech Stack
+- React Fiber (V16)
+- React dev tools
+- Webpack Legato (V4)
+- Flow Type checker
+- styled-components v3
+- Babel (ES6 - ES8)
+- ESLint
+- Yarn
+- git / git flow / github
+- PostCSS
+
 ## Creation Steps
 
 - Dev enviroment and tools prepare, using Webpack Legato (V4) ready for produce modern React apps
@@ -156,3 +280,18 @@ React Input Autocompletation is a little component where you can use independent
 
 - Store the amount of suggestions in state and send this to Suggests Component
 	- this step is for future implementations. To know how many options have the suggestion box and select the options using keyboard.
+
+## Software Used
+
+- [visual studio code](https://code.visualstudio.com/)
+- [git with git flow](https://git-scm.com/)
+- [Haroopad](http://pad.haroopress.com/)
+- [yarn](https://yarnpkg.com/lang/en/docs/install/)
+
+## Author
+-  __[Pedro La Rosa (luigi055)](https://github.com/luigi055)__
+
+See also the list of [contributors](https://github.com/luigi055/TDAH-REST-API/contributors) who participated in this project.
+
+## License
+This project is licensed under the MIT License.
