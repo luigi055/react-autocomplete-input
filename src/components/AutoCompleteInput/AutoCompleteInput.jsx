@@ -86,12 +86,14 @@ class AutoCompleteInput extends Component<Props, State> {
         }}
         className="autocomplete"
         showLabel={this.props.showLabel}
+        htmlFor={this.props.stateName}
       >
         {this.props.labelName.length > 0 && (
           <span> {this.props.labelName} </span>
         )}
         <InputSearch
           type="text"
+          id={this.props.stateName}
           onChange={AutoCompleteInput.handleTermChange(
             this.updateLocalState,
             this.updateParentState,
