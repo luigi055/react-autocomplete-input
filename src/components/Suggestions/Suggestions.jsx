@@ -33,10 +33,11 @@ const Suggestions = ({
             updateLocalState,
             updateParentState
           )}
-          onMouseOver={Suggestions.hoverSuggestion(
+          onMouseOver={Suggestions.mouseOverSuggestion(
             updateLocalState,
             suggestedItems.indexOf(autoCompleteItem)
           )}
+          onMouseLeave={Suggestions.mouseLeaveSuggestion(updateLocalState)}
           onFocus={Suggestions.hoverFocus}
           active={suggestedItems[currentOption] === autoCompleteItem}
           role="presentation"
@@ -60,12 +61,17 @@ Suggestions.selectCompletion = (
   updateParentState(event.target.textContent);
 };
 
-Suggestions.hoverSuggestion = (
+Suggestions.mouseOverSuggestion = (
   updateLocalState: Function,
   indexNumber: number
 ) => () => {
   updateLocalState({
     currentOption: indexNumber
+  });
+};
+Suggestions.mouseLeaveSuggestion = (updateLocalState: Function) => () => {
+  updateLocalState({
+    currentOption: -1
   });
 };
 // Suggestions.hoverFocus = (event: SyntheticFocusEvent<HTMLLiElement>) => {
