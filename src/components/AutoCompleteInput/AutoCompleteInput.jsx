@@ -211,6 +211,7 @@ AutoCompleteInput.handleCloseAutoComplete = (
       suggestedItems: []
     });
   } else if (event.keyCode === 13) {
+    // When Enter
     updateLocalState(prevState => ({
       open: false,
       searchTerm: prevState.suggestedItems[prevState.currentOption],
@@ -219,6 +220,7 @@ AutoCompleteInput.handleCloseAutoComplete = (
     }));
     updateParentState(state.suggestedItems[state.currentOption]);
   } else if (event.keyCode === 40) {
+    // When arrow up
     updateLocalState(prevState => {
       const arrayItem = prevState.suggestedItems.length - 1;
       const maxOption =
@@ -230,6 +232,7 @@ AutoCompleteInput.handleCloseAutoComplete = (
       };
     });
   } else if (event.keyCode === 38) {
+    // when arrow down
     updateLocalState(prevState => {
       const minOption =
         prevState.currentOption < 1 ? 0 : prevState.currentOption - 1;
