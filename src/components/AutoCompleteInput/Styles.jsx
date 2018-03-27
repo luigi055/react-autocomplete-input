@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const ContainerInput = styled.label`
   box-sizing: border-box;
   border: 0;
-  margin: 0 0 0 50px;
+  margin: 0;
   padding: 0;
   position: relative;
 
