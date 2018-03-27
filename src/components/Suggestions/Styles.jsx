@@ -1,7 +1,7 @@
 // @flow
 import styled from "styled-components";
 
-const ItemSuggestions = styled.div`
+export const ItemSuggestions = styled.div`
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 0 0 5px 5px;
@@ -18,16 +18,11 @@ const ItemSuggestions = styled.div`
     list-style: none;
     margin: 0;
     padding: 0;
-
-    li {
-      cursor: pointer;
-      padding: 10px 15px;
-
-      &:hover {
-        background-color: #eee;
-      }
-    }
   }
 `;
 
-export default ItemSuggestions;
+export const Suggestion = styled.li`
+  cursor: pointer;
+  padding: 10px 15px;
+  background-color: ${props => (props.active ? "#eee" : "transparent")};
+`;

@@ -19,7 +19,9 @@ type Props = {
 type State = {
   searchTerm: string,
   open: boolean,
-  suggestedItems: Array<string>
+  suggestedItems: Array<string>,
+
+  currentOption: number
 };
 
 class AutoCompleteInput extends Component<Props, State> {
@@ -35,7 +37,8 @@ class AutoCompleteInput extends Component<Props, State> {
   state = {
     searchTerm: "",
     open: false,
-    suggestedItems: []
+    suggestedItems: [],
+    currentOption: 0
   };
 
   componentDidMount() {
@@ -67,9 +70,9 @@ class AutoCompleteInput extends Component<Props, State> {
     }
   };
 
-  updateLocalState = state => this.setState(state);
+  updateLocalState = (state: object) => this.setState(state);
   // This will update parent state which control this component
-  updateParentState = searchTerm => {
+  updateParentState = (searchTerm: string) => {
     this.props.parentUpdateState({
       [this.props.stateName]: searchTerm
     });
@@ -77,7 +80,6 @@ class AutoCompleteInput extends Component<Props, State> {
 
   render() {
     const { searchTerm, open } = this.state;
-
     return (
       <ContainerInput
         ref={domRef => {
@@ -107,7 +109,9 @@ class AutoCompleteInput extends Component<Props, State> {
             this.updateParentState
           )}
           onKeyDown={AutoCompleteInput.handleCloseAutoComplete(
-            this.updateLocalState
+            this.updateLocalState,
+            this.state,
+            this.updateParentState
           )}
           value={searchTerm}
           placeholder={this.props.placeholder}
@@ -171,7 +175,7 @@ AutoCompleteInput.handleTermChange = (
     open: true,
     suggestedItems: AutoCompleteList
   });
-  updateParentState(event.target.value);
+  updateParentState(event.currentTarget.value);
 };
 
 AutoCompleteInput.handleFocusInput = (
@@ -190,14 +194,54 @@ AutoCompleteInput.handleFocusInput = (
   updateParentState(searchTerm);
 };
 
-AutoCompleteInput.handleCloseAutoComplete = (updateLocalState: Function) => (
-  event: SyntheticKeyboardEvent<HTMLInputElement>
-) => {
+AutoCompleteInput.handleCloseAutoComplete = (
+  updateLocalState: Function,
+  state: string,
+  updateParentState: Function
+) => (event: SyntheticKeyboardEvent<HTMLInputElement>) => {
+  // const suggestedItemLength =
+  //   suggestedItems.length === 0
+  //     ? suggestedItems.length
+  //     : suggestedItems.length - 1;
+  // console.log(suggestedItemLength);
   // Close autocomplete when press Enter or Esc
-  if (event.which === 13 || event.which === 27) {
+  if (event.which === 27) {
     updateLocalState({
       open: false,
       suggestedItems: []
+    });
+  } else if (event.keyCode === 13) {
+    updateLocalState(prevState => ({
+      open: false,
+      searchTerm: prevState.suggestedItems[prevState.currentOption],
+      suggestedItems: [],
+      currentOption: 0
+    }));
+    updateParentState(state.suggestedItems[state.currentOption]);
+  } else if (event.keyCode === 40) {
+    updateLocalState(prevState => {
+      const arrayItem = prevState.suggestedItems.length - 1;
+      const maxOption =
+        prevState.currentOption < arrayItem
+          ? prevState.currentOption + 1
+          : arrayItem;
+      return {
+        currentOption: maxOption
+      };
+    });
+  } else if (event.keyCode === 38) {
+    updateLocalState(prevState => {
+      const minOption =
+        prevState.currentOption < 1 ? 0 : prevState.currentOption - 1;
+      return {
+        currentOption: minOption
+      };
+    });
+  } else if (event.keyCode === 9) {
+    updateLocalState({
+      currentOption: 0,
+      suggestedItems: [],
+      open: false
     });
   }
 };

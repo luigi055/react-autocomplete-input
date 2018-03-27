@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import ItemSuggestions from "./Styles";
+import { ItemSuggestions, Suggestion } from "./Styles";
 
 type Props = {
   searchTerm: string,
@@ -8,7 +8,8 @@ type Props = {
   updateLocalState: Function,
   updateParentState: Function,
   open: boolean,
-  suggestedItems: Array<string>
+  suggestedItems: Array<string>,
+  currentOption: number
 };
 
 const Suggestions = ({
@@ -17,7 +18,8 @@ const Suggestions = ({
   updateLocalState,
   updateParentState,
   open,
-  suggestedItems
+  suggestedItems,
+  currentOption
 }: Props) => (
   <ItemSuggestions
     open={open && searchTerm.length > 0 ? open : false}
@@ -25,16 +27,22 @@ const Suggestions = ({
   >
     <ul className="suggestions-list">
       {suggestedItems.map(autoCompleteItem => (
-        <li
+        <Suggestion
           key={autoCompleteItem}
           onClick={Suggestions.selectCompletion(
             updateLocalState,
             updateParentState
           )}
+          onMouseOver={Suggestions.hoverSuggestion(
+            updateLocalState,
+            suggestedItems.indexOf(autoCompleteItem)
+          )}
+          onFocus={Suggestions.hoverFocus}
+          active={suggestedItems[currentOption] === autoCompleteItem}
           role="presentation"
         >
           {autoCompleteItem}
-        </li>
+        </Suggestion>
       ))}
     </ul>
   </ItemSuggestions>
@@ -51,5 +59,17 @@ Suggestions.selectCompletion = (
   });
   updateParentState(event.target.textContent);
 };
+
+Suggestions.hoverSuggestion = (
+  updateLocalState: Function,
+  indexNumber: number
+) => () => {
+  updateLocalState({
+    currentOption: indexNumber
+  });
+};
+// Suggestions.hoverFocus = (event: SyntheticFocusEvent<HTMLLiElement>) => {
+//   event.focus();
+// };
 
 export default Suggestions;

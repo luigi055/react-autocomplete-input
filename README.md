@@ -17,7 +17,7 @@ React Input Autocompletation is a little component where you can use independent
 - [license](#license)
 
 ## Next To Do
-- [ ] Keyboard controls
+- [x] Keyboard controls
 - [ ] Accesibility considerations
 - [ ] Documentation revisions
 - [ ] styled-component template to simplify customization
@@ -280,6 +280,8 @@ $yarn run clear
 
 - Store the amount of suggestions in state and send this to Suggests Component
 	- this step is for future implementations. To know how many options have the suggestion box and select the options using keyboard.
+
+- Keyboard control is now posible to interact with the autocomplete input. you can select the option using up and down options and select one when pressing enter.
 
 ## Software Used
 
